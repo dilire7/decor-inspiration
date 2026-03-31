@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<!-- Open Graph / 微信分享 -->
+<meta property="og:title" content="装修灵感收集器 - 发现全网好看的装修风格">
+<meta property="og:description" content="海量高质量装修灵感图片，按风格和空间分类浏览，收藏喜欢的方案，为你的家找到最美设计。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600">
+<meta name="description" content="海量高质量装修灵感图片，按风格和空间分类浏览，收藏喜欢的方案，为你的家找到最美设计。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<title>装修灵感收集器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f5f5;color:#333}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.navbar h1{font-size:20px;white-space:nowrap;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.search-box{flex:1;max-width:400px;position:relative}
+.search-box input{width:100%;padding:8px 36px 8px 14px;border:2px solid #e0e0e0;border-radius:20px;font-size:14px;outline:none;transition:border .2s}
+.search-box input:focus{border-color:#667eea}
+.search-box button{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:4px 8px}
+.nav-btns{display:flex;gap:8px;margin-left:auto}
+.nav-btn{padding:6px 14px;border:1.5px solid #e0e0e0;border-radius:18px;background:#fff;cursor:pointer;font-size:13px;transition:all .2s;white-space:nowrap}
+.nav-btn:hover{border-color:#667eea;color:#667eea}
+.nav-btn.active{background:#667eea;color:#fff;border-color:#667eea}
+.tags-bar{position:fixed;top:60px;left:0;right:0;z-index:99;background:#fff;border-bottom:1px solid #eee;padding:10px 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tags-bar::-webkit-scrollbar{display:none}
+.tag{padding:6px 16px;border-radius:16px;background:#f0f0f0;border:none;cursor:pointer;font-size:13px;white-space:nowrap;transition:all .2s}
+.tag:hover{background:#e8e0f5}
+.tag.active{background:#667eea;color:#fff}
+.tag-divider{width:1px;background:#ddd;margin:0 4px;flex-shrink:0}
+.main{padding-top:115px;padding-left:16px;padding-right:16px;padding-bottom:40px}
+.waterfall{column-count:4;column-gap:16px}
+@media(max-width:1200px){.waterfall{column-count:3}}
+@media(max-width:768px){.waterfall{column-count:2}.navbar h1{font-size:16px}}
+@media(max-width:480px){.waterfall{column-count:2}.navbar{padding:10px 12px}}
+.card{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;cursor:pointer}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.card img{width:100%;display:block}
+.card-info{padding:10px 12px}
+.card-info p{font-size:13px;color:#666;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding:0 12px 10px}
+.card-author{font-size:12px;color:#999}
+.fav-btn{background:none;border:none;font-size:20px;cursor:pointer;transition:transform .2s}
+.fav-btn:hover{transform:scale(1.2)}
+.fav-btn.liked{color:#e74c3c}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:200;justify-content:center;align-items:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;z-index:1}
+.modal img{width:100%;border-radius:16px 16px 0 0}
+.modal-body{padding:16px 20px 20px}
+.modal-body h3{font-size:16px;margin-bottom:8px}
+.modal-body .author{font-size:13px;color:#888;margin-bottom:12px}
+.modal-body .desc{font-size:14px;color:#555;line-height:1.6}
+.modal-fav{display:flex;align-items:center;gap:6px;margin-top:12px;padding:8px 16px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:14px;transition:all .2s}
+.modal-fav:hover{border-color:#e74c3c}
+.modal-fav.liked{background:#fff0f0;border-color:#e74c3c;color:#e74c3c}
+.settings-modal .modal{max-width:420px}
+.settings-modal .modal-body{padding:24px}
+.settings-modal h3{font-size:18px;margin-bottom:16px}
+.settings-modal label{display:block;font-size:13px;color:#666;margin-bottom:6px}
+.settings-modal input{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;outline:none;transition:border .2s;margin-bottom:16px}
+.settings-modal input:focus{border-color:#667eea}
+.settings-modal .save-btn{width:100%;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;transition:opacity .2s}
+.settings-modal .save-btn:hover{opacity:.9}
+.settings-modal .hint{font-size:12px;color:#999;margin-bottom:16px;line-height:1.5}
+.loader{text-align:center;padding:30px;color:#999;font-size:14px}
+.loader .spinner{display:inline-block;width:30px;height:30px;border:3px solid #e0e0e0;border-top-color:#667eea;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:80px 20px;color:#999}
+.empty-state .icon{font-size:60px;margin-bottom:16px}
+.empty-state p{font-size:15px;line-height:1.6}
+.api-tip{position:fixed;top:60px;left:0;right:0;z-index:98;background:#fff3cd;color:#856404;padding:8px 20px;font-size:13px;text-align:center;border-bottom:1px solid #ffc107;display:none}
+.api-tip a{color:#533f03;font-weight:600}
+.api-tip .close-tip{background:none;border:none;font-size:16px;cursor:pointer;margin-left:10px;color:#856404}
+/* ======= 收藏夹文件夹 ======= */
+.fav-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.fav-header .folder-tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.folder-tab{padding:6px 14px;border-radius:16px;background:#f0f0f0;border:1.5px solid transparent;cursor:pointer;font-size:13px;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:4px}
+.folder-tab:hover{background:#e8e0f5}
+.folder-tab.active{background:#667eea;color:#fff;border-color:#667eea}
+.folder-tab .folder-count{font-size:11px;opacity:.7}
+.folder-tab .folder-actions{display:none;margin-left:2px;gap:2px}
+.folder-tab:hover .folder-actions{display:inline-flex}
+.folder-tab .fa-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:0 2px;opacity:.6;color:inherit}
+.folder-tab .fa-btn:hover{opacity:1}
+.add-folder-btn{padding:6px 12px;border-radius:16px;background:none;border:1.5px dashed #ccc;cursor:pointer;font-size:13px;color:#999;transition:all .2s}
+.add-folder-btn:hover{border-color:#667eea;color:#667eea}
+/* ======= 收藏到文件夹弹窗 ======= */
+.folder-picker .modal{max-width:380px}
+.folder-picker .modal-body{padding:20px 24px 24px}
+.folder-picker h3{font-size:16px;margin-bottom:14px}
+.folder-list{max-height:240px;overflow-y:auto;margin-bottom:14px}
+.folder-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s;border:1.5px solid transparent;margin-bottom:4px}
+.folder-item:hover{background:#f5f3ff}
+.folder-item.selected{background:#f0edff;border-color:#667eea}
+.folder-item .fi-icon{font-size:20px}
+.folder-item .fi-name{flex:1;font-size:14px}
+.folder-item .fi-count{font-size:12px;color:#999}
+.new-folder-row{display:flex;gap:8px;margin-bottom:14px}
+.new-folder-row input{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none}
+.new-folder-row input:focus{border-color:#667eea}
+.new-folder-row button{padding:8px 14px;background:#667eea;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;white-space:nowrap}
+.folder-picker .confirm-btn{width:100%;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer}
+.folder-picker .confirm-btn:hover{opacity:.9}
+/* ======= 备注相关 ======= */
+.note-section{margin-top:14px;padding-top:14px;border-top:1px solid #f0f0f0}
+.note-section label{font-size:12px;color:#999;display:block;margin-bottom:6px}
+.note-display{font-size:13px;color:#555;line-height:1.5;min-height:20px;cursor:pointer;padding:6px 10px;border-radius:8px;background:#fafafa;transition:background .15s}
+.note-display:hover{background:#f0f0f0}
+.note-display:empty::before{content:'点击添加备注...';color:#ccc}
+.note-edit{display:none}
+.note-edit textarea{width:100%;padding:8px 10px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:13px;resize:vertical;min-height:60px;outline:none;font-family:inherit}
+.note-edit textarea:focus{border-color:#667eea}
+.note-edit-btns{display:flex;gap:6px;margin-top:6px;justify-content:flex-end}
+.note-edit-btns button{padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid #ddd;background:#fff}
+.note-edit-btns .save-note{background:#667eea;color:#fff;border-color:#667eea}
+/* ======= 卡片备注标识 ======= */
+.card-note{font-size:12px;color:#667eea;padding:0 12px 8px;display:flex;align-items:center;gap:4px}
+.card-note .note-icon{font-size:14px}
+/* ======= 重命名弹窗 ======= */
+.rename-modal .modal{max-width:360px}
+.rename-modal .modal-body{padding:20px 24px}
+.rename-modal h3{font-size:16px;margin-bottom:14px}
+.rename-modal input{width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;outline:none;margin-bottom:14px}
+.rename-modal input:focus{border-color:#667eea}
+.rename-modal .confirm-btn{width:100%;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer}
+/* ======= 导出弹窗 ======= */
+.export-modal .modal{max-width:600px}
+.export-modal .modal-body{padding:20px 24px 24px}
+.export-modal h3{font-size:18px;margin-bottom:16px}
+.export-options{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.export-opt{padding:8px 16px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:13px;transition:all .2s}
+.export-opt:hover{border-color:#667eea;color:#667eea}
+.export-opt.active{background:#667eea;color:#fff;border-color:#667eea}
+.export-preview{background:#f9f9f9;border-radius:12px;padding:16px;text-align:center;min-height:200px;margin-bottom:16px;position:relative;overflow:hidden}
+.export-preview canvas{max-width:100%;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.export-preview .preview-loading{color:#999;padding:60px 0;font-size:14px}
+.export-btns{display:flex;gap:10px}
+.export-btns button{flex:1;padding:10px;border-radius:10px;font-size:14px;cursor:pointer;border:none;transition:opacity .2s}
+.export-btns .btn-download{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.export-btns .btn-download:hover{opacity:.9}
+.export-btns .btn-cancel{background:#f0f0f0;color:#666}
+.export-btns .btn-cancel:hover{background:#e0e0e0}
+.export-btn-fav{padding:6px 12px;border-radius:16px;background:none;border:1.5px solid #667eea;cursor:pointer;font-size:13px;color:#667eea;transition:all .2s;white-space:nowrap}
+.export-btn-fav:hover{background:#667eea;color:#fff}
+/* ======= 分享弹窗 ======= */
+.share-modal .modal{max-width:400px}
+.share-modal .modal-body{padding:24px;text-align:center}
+.share-modal h3{font-size:18px;margin-bottom:16px}
+.share-modal .share-url{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:13px;background:#f9f9f9;color:#333;text-align:center;outline:none;margin-bottom:12px}
+.share-modal .share-url:focus{border-color:#667eea}
+.share-modal .share-btns{display:flex;gap:10px;margin-bottom:16px}
+.share-modal .share-btns button{flex:1;padding:10px;border-radius:10px;font-size:14px;cursor:pointer;border:none;transition:all .2s}
+.share-modal .btn-copy{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.share-modal .btn-copy:hover{opacity:.9}
+.share-modal .share-hint{font-size:12px;color:#999;line-height:1.6}
+.share-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 28px;border-radius:10px;font-size:14px;z-index:999;display:none;pointer-events:none}
+</style>
+</head>
+<body>
+<!-- API 提示条 -->
+<div class="api-tip" id="apiTip">
+  请先配置 Unsplash API Key 才能搜索图片。点击右上角「设置」按钮进行配置。
+  <button class="close-tip" onclick="document.getElementById('apiTip').style.display='none'">&times;</button>
+</div>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+  <h1>装修灵感收集器</h1>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="搜索装修风格，如：北欧卧室、简约客厅...">
+    <button onclick="doSearch()">&#128269;</button>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn" id="favToggle" onclick="toggleFavView()">&#10084; 收藏</button>
+    <button class="nav-btn" onclick="shareApp()">&#128279; 分享</button>
+    <button class="nav-btn" onclick="showSettings()">&#9881; 设置</button>
+  </div>
+</nav>
+
+<!-- 分类标签栏 -->
+<div class="tags-bar" id="tagsBar">
+  <button class="tag active" data-query="interior design">全部</button>
+  <button class="tag" data-query="scandinavian interior design">北欧风</button>
+  <button class="tag" data-query="japanese minimalist interior">日式</button>
+  <button class="tag" data-query="modern minimalist interior">现代简约</button>
+  <button class="tag" data-query="luxury modern interior design">轻奢</button>
+  <button class="tag" data-query="chinese style interior design">中式</button>
+  <button class="tag" data-query="american style interior">美式</button>
+  <button class="tag" data-query="industrial loft interior">工业风</button>
+  <div class="tag-divider"></div>
+  <button class="tag" data-query="living room design">客厅</button>
+  <button class="tag" data-query="bedroom design">卧室</button>
+  <button class="tag" data-query="kitchen design">厨房</button>
+  <button class="tag" data-query="bathroom design">卫生间</button>
+  <button class="tag" data-query="study room design">书房</button>
+  <button class="tag" data-query="balcony design">阳台</button>
+  <button class="tag" data-query="entryway design">玄关</button>
+  <button class="tag" data-query="dining room design">餐厅</button>
+</div>
+
+<!-- 主内容区 -->
+<div class="main">
+  <div class="waterfall" id="waterfall"></div>
+  <div class="loader" id="loader" style="display:none">
+    <div class="spinner"></div>
+    <div>正在加载精美装修图片...</div>
+  </div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="icon">&#127968;</div>
+    <p>暂无图片<br>请先配置 API Key 或切换分类试试</p>
+  </div>
+</div>
+<!-- 图片详情弹窗 -->
+<div class="modal-overlay" id="detailModal" onclick="closeDetail(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDetailForce()">&times;</button>
+    <img id="detailImg" src="" alt="">
+    <div class="modal-body">
+      <h3 id="detailTitle"></h3>
+      <div class="author" id="detailAuthor"></div>
+      <p class="desc" id="detailDesc"></p>
+      <button class="modal-fav" id="detailFav" onclick="toggleDetailFav()">
+        <span id="detailFavIcon">&#9825;</span>
+        <span id="detailFavText">收藏</span>
+      </button>
+      <!-- 备注区域 -->
+      <div class="note-section" id="noteSection" style="display:none">
+        <label>我的备注</label>
+        <div class="note-display" id="noteDisplay" onclick="startEditNote()"></div>
+        <div class="note-edit" id="noteEdit">
+          <textarea id="noteTextarea" placeholder="写下你的想法，比如：这个配色方案适合我家客厅..."></textarea>
+          <div class="note-edit-btns">
+            <button onclick="cancelEditNote()">取消</button>
+            <button class="save-note" onclick="saveNote()">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="modal-overlay settings-modal" id="settingsModal" onclick="closeSettings(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSettingsForce()">&times;</button>
+    <div class="modal-body">
+      <h3>&#9881; 设置</h3>
+      <label for="apiKeyInput">Unsplash Access Key</label>
+      <input type="text" id="apiKeyInput" placeholder="请输入您的 Unsplash Access Key">
+      <div class="hint">
+        如何获取 API Key：<br>
+        1. 访问 unsplash.com/developers 注册免费账号<br>
+        2. 创建一个新的 Application<br>
+        3. 复制 Access Key 粘贴到上方输入框<br>
+        Demo 模式每小时可免费使用 50 次请求
+      </div>
+      <button class="save-btn" onclick="saveApiKey()">保存设置</button>
+    </div>
+  </div>
+</div>
+
+<!-- 收藏到文件夹弹窗 -->
+<div class="modal-overlay folder-picker" id="folderPicker" onclick="closeFolderPicker(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeFolderPickerForce()">&times;</button>
+    <div class="modal-body">
+      <h3>收藏到文件夹</h3>
+      <div class="new-folder-row">
+        <input type="text" id="newFolderInput" placeholder="新建文件夹名称...">
+        <button onclick="createFolderFromPicker()">新建</button>
+      </div>
+      <div class="folder-list" id="folderList"></div>
+      <button class="confirm-btn" onclick="confirmFavToFolder()">确认收藏</button>
+    </div>
+  </div>
+</div>
+
+<!-- 重命名文件夹弹窗 -->
+<div class="modal-overlay rename-modal" id="renameModal" onclick="closeRename(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeRenameForce()">&times;</button>
+    <div class="modal-body">
+      <h3>重命名文件夹</h3>
+      <input type="text" id="renameInput" placeholder="输入新名称">
+      <button class="confirm-btn" onclick="confirmRename()">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导出图片弹窗 -->
+<div class="modal-overlay export-modal" id="exportModal" onclick="closeExport(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeExportForce()">&times;</button>
+    <div class="modal-body">
+      <h3>&#128247; 导出收藏为图片</h3>
+      <div class="export-options">
+        <button class="export-opt active" data-layout="grid" onclick="switchExportLayout('grid')">宫格布局</button>
+        <button class="export-opt" data-layout="list" onclick="switchExportLayout('list')">列表布局</button>
+        <button class="export-opt" data-layout="single" onclick="switchExportLayout('single')">逐张导出</button>
+      </div>
+      <div class="export-preview" id="exportPreview">
+        <div class="preview-loading">正在生成预览...</div>
+      </div>
+      <div class="export-btns">
+        <button class="btn-cancel" onclick="closeExportForce()">取消</button>
+        <button class="btn-download" onclick="downloadExport()">&#11015; 下载图片</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 分享弹窗 -->
+<div class="modal-overlay share-modal" id="shareModal" onclick="closeShare(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeShareForce()">&times;</button>
+    <div class="modal-body">
+      <h3>&#128279; 分享给好友</h3>
+      <input class="share-url" id="shareUrl" readonly>
+      <div class="share-btns">
+        <button class="btn-copy" onclick="copyShareUrl()">复制链接</button>
+      </div>
+      <div class="share-hint">
+        复制链接后，发送给微信好友即可。<br>
+        对方打开链接就能浏览装修图片、收藏和添加备注。<br>
+        每个人的收藏数据独立保存在自己的设备上。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast 提示 -->
+<div class="share-toast" id="toast"></div>
+
+<script>
+// ======= 状态管理 =======
+let currentQuery = 'interior design';
+let currentPage = 1;
+let isLoading = false;
+let showingFav = false;
+let currentFavFolder = '__all__'; // 当前查看的收藏夹文件夹
+let currentDetailPhoto = null;
+let allPhotos = [];
+let pendingFavPhoto = null; // 等待选择文件夹的图片
+let renamingFolderId = null; // 正在重命名的文件夹
+
+// 中文搜索词到英文的映射
+const zhToEn = {
+  '北欧':'scandinavian interior design','日式':'japanese minimalist interior',
+  '现代简约':'modern minimalist interior','简约':'modern minimalist interior',
+  '轻奢':'luxury modern interior design','中式':'chinese style interior design',
+  '美式':'american style interior','工业风':'industrial loft interior',
+  '地中海':'mediterranean interior design','法式':'french style interior design',
+  '客厅':'living room design','卧室':'bedroom design','厨房':'kitchen design',
+  '卫生间':'bathroom design','书房':'study room design','阳台':'balcony design',
+  '玄关':'entryway design','餐厅':'dining room design','装修':'interior design',
+  '家居':'home interior','卧房':'bedroom design','洗手间':'bathroom design',
+  '浴室':'bathroom design','大厅':'living room design'
+};
+
+// ======= API 相关 =======
+function getApiKey() {
+  return localStorage.getItem('unsplash_api_key') || '';
+}
+
+function checkApiKey() {
+  const key = getApiKey();
+  const tip = document.getElementById('apiTip');
+  if (!key) {
+    tip.style.display = 'block';
+    document.querySelector('.main').style.paddingTop = '150px';
+    return false;
+  }
+  tip.style.display = 'none';
+  document.querySelector('.main').style.paddingTop = '115px';
+  return true;
+}
+
+async function fetchPhotos(query, page) {
+  const key = getApiKey();
+  if (!key) return null;
+  const url = 'https://api.unsplash.com/search/photos?query=' + encodeURIComponent(query) + '&per_page=20&page=' + page + '&client_id=' + encodeURIComponent(key);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    const data = await res.json();
+    // 将 Unsplash 格式转换为统一格式
+    var photos = (data.results || []).map(function(item) {
+      return {
+        id: item.id,
+        src: {
+          medium: item.urls.small,
+          large: item.urls.regular
+        },
+        alt: item.description || item.alt_description || '',
+        photographer: item.user.name,
+        photographer_url: item.user.links.html
+      };
+    });
+    return { photos: photos, total: data.total };
+  } catch (e) {
+    console.error('Fetch error:', e);
+    return null;
+  }
+}
+// ======= 收藏管理（文件夹+备注） =======
+function getStore() {
+  try {
+    var d = JSON.parse(localStorage.getItem('decor_store') || '{}');
+    if (!d.folders) d.folders = [{id:'default',name:'默认收藏'}];
+    if (!d.items) d.items = [];
+    // 兼容旧数据：迁移旧的 decor_favs
+    var old = localStorage.getItem('decor_favs');
+    if (old) {
+      var oldArr = JSON.parse(old);
+      oldArr.forEach(function(p) {
+        if (!d.items.some(function(it){ return it.photo.id === p.id; })) {
+          d.items.push({photo:p, folderId:'default', note:''});
+        }
+      });
+      localStorage.removeItem('decor_favs');
+      saveStore(d);
+    }
+    return d;
+  } catch(e) { return {folders:[{id:'default',name:'默认收藏'}],items:[]}; }
+}
+function saveStore(d) {
+  localStorage.setItem('decor_store', JSON.stringify(d));
+}
+function getFolders() { return getStore().folders; }
+function getFavItems(folderId) {
+  var d = getStore();
+  if (!folderId || folderId === '__all__') return d.items;
+  return d.items.filter(function(it){ return it.folderId === folderId; });
+}
+function isFaved(photoId) {
+  return getStore().items.some(function(it){ return it.photo.id === photoId; });
+}
+function getFavItem(photoId) {
+  return getStore().items.find(function(it){ return it.photo.id === photoId; });
+}
+function addFavToFolder(photo, folderId) {
+  var d = getStore();
+  if (d.items.some(function(it){ return it.photo.id === photo.id; })) return;
+  d.items.push({photo:photo, folderId:folderId, note:''});
+  saveStore(d);
+}
+function removeFav(photoId) {
+  var d = getStore();
+  d.items = d.items.filter(function(it){ return it.photo.id !== photoId; });
+  saveStore(d);
+}
+function updateNote(photoId, note) {
+  var d = getStore();
+  var it = d.items.find(function(it){ return it.photo.id === photoId; });
+  if (it) { it.note = note; saveStore(d); }
+}
+function createFolder(name) {
+  var d = getStore();
+  var id = 'f_' + Date.now();
+  d.folders.push({id:id, name:name});
+  saveStore(d);
+  return id;
+}
+function renameFolder(folderId, newName) {
+  var d = getStore();
+  var f = d.folders.find(function(f){ return f.id === folderId; });
+  if (f) { f.name = newName; saveStore(d); }
+}
+function deleteFolder(folderId) {
+  var d = getStore();
+  d.folders = d.folders.filter(function(f){ return f.id !== folderId; });
+  // 将该文件夹的图片移到默认收藏
+  d.items.forEach(function(it) {
+    if (it.folderId === folderId) it.folderId = 'default';
+  });
+  saveStore(d);
+}
+
+// ======= 收藏按钮操作 =======
+function toggleFav(photo) {
+  if (isFaved(photo.id)) {
+    removeFav(photo.id);
+    refreshFavButtons();
+    if (showingFav) renderFavView();
+  } else {
+    // 弹出文件夹选择器
+    pendingFavPhoto = photo;
+    showFolderPicker();
+  }
+}
+
+function refreshFavButtons() {
+  document.querySelectorAll('.fav-btn').forEach(function(btn) {
+    var id = btn.dataset.id;
+    if (isFaved(id)) {
+      btn.innerHTML = '&#10084;';
+      btn.classList.add('liked');
+    } else {
+      btn.innerHTML = '&#9825;';
+      btn.classList.remove('liked');
+    }
+  });
+  updateDetailFavBtn();
+}
+
+function updateDetailFavBtn() {
+  if (!currentDetailPhoto) return;
+  var df = document.getElementById('detailFav');
+  var di = document.getElementById('detailFavIcon');
+  var dt = document.getElementById('detailFavText');
+  var ns = document.getElementById('noteSection');
+  if (isFaved(currentDetailPhoto.id)) {
+    df.classList.add('liked');
+    di.innerHTML = '&#10084;';
+    dt.textContent = '已收藏';
+    ns.style.display = 'block';
+    var item = getFavItem(currentDetailPhoto.id);
+    document.getElementById('noteDisplay').textContent = item ? item.note : '';
+  } else {
+    df.classList.remove('liked');
+    di.innerHTML = '&#9825;';
+    dt.textContent = '收藏';
+    ns.style.display = 'none';
+  }
+}
+
+// ======= 渲染卡片 =======
+function createCard(photo, favItem) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  card.onclick = function(e) {
+    if (e.target.closest('.fav-btn')) return;
+    showDetail(photo);
+  };
+  var faved = isFaved(photo.id);
+  var photoJson = JSON.stringify({id:photo.id,src:photo.src,alt:photo.alt,photographer:photo.photographer,photographer_url:photo.photographer_url}).replace(/"/g,'&quot;');
+  var noteHtml = '';
+  if (favItem && favItem.note) {
+    var safeNote = favItem.note.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var shortNote = safeNote.length > 30 ? safeNote.substring(0,30) + '...' : safeNote;
+    noteHtml = '<div class="card-note"><span class="note-icon">&#128221;</span>' + shortNote + '</div>';
+  }
+  card.innerHTML =
+    '<img src="' + photo.src.medium + '" alt="' + (photo.alt || '装修图片').replace(/"/g,'&quot;') + '" loading="lazy">' +
+    '<div class="card-info"><p>' + (photo.alt || '精美装修灵感') + '</p></div>' +
+    noteHtml +
+    '<div class="card-footer">' +
+      '<span class="card-author">' + photo.photographer + '</span>' +
+      '<button class="fav-btn ' + (faved ? 'liked' : '') + '" data-id="' + photo.id + '" onclick="event.stopPropagation();toggleFav(' + photoJson + ')">' +
+        (faved ? '&#10084;' : '&#9825;') +
+      '</button>' +
+    '</div>';
+  return card;
+}
+
+function renderPhotos(photos, append) {
+  var container = document.getElementById('waterfall');
+  if (!append) container.innerHTML = '';
+  photos.forEach(function(p) {
+    container.appendChild(createCard(p));
+  });
+  var empty = document.getElementById('emptyState');
+  if (container.children.length === 0) { empty.style.display = 'block'; }
+  else { empty.style.display = 'none'; }
+}
+// ======= 加载逻辑 =======
+async function loadPhotos(query, page, append) {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('emptyState').style.display = 'none';
+
+  var data = await fetchPhotos(query, page);
+  document.getElementById('loader').style.display = 'none';
+  isLoading = false;
+
+  if (data && data.photos && data.photos.length > 0) {
+    if (append) { allPhotos = allPhotos.concat(data.photos); }
+    else { allPhotos = data.photos; }
+    renderPhotos(data.photos, append);
+  } else if (!append) {
+    allPhotos = [];
+    renderPhotos([], false);
+  }
+}
+
+// ======= 搜索 =======
+function translateQuery(text) {
+  text = text.trim();
+  // 尝试完整匹配
+  if (zhToEn[text]) return zhToEn[text];
+  // 尝试部分匹配组合
+  var parts = [];
+  for (var key in zhToEn) {
+    if (text.indexOf(key) >= 0) {
+      parts.push(zhToEn[key]);
+      text = text.replace(key, '');
+    }
+  }
+  if (parts.length > 0) {
+    var remaining = text.trim();
+    return parts.join(' ') + (remaining ? ' ' + remaining : '');
+  }
+  // 默认加上 interior design
+  return text + ' interior design';
+}
+
+function doSearch() {
+  var input = document.getElementById('searchInput').value.trim();
+  if (!input) return;
+  if (!checkApiKey()) { showSettings(); return; }
+  showingFav = false;
+  document.getElementById('favToggle').classList.remove('active');
+  // 清除标签选中状态
+  document.querySelectorAll('.tag').forEach(function(t){ t.classList.remove('active'); });
+  currentQuery = translateQuery(input);
+  currentPage = 1;
+  loadPhotos(currentQuery, currentPage, false);
+}
+
+// ======= 标签切换 =======
+document.querySelectorAll('.tag').forEach(function(tag) {
+  tag.addEventListener('click', function() {
+    if (!checkApiKey()) { showSettings(); return; }
+    showingFav = false;
+    document.getElementById('favToggle').classList.remove('active');
+    document.querySelectorAll('.tag').forEach(function(t){ t.classList.remove('active'); });
+    tag.classList.add('active');
+    currentQuery = tag.dataset.query;
+    currentPage = 1;
+    document.getElementById('searchInput').value = '';
+    loadPhotos(currentQuery, currentPage, false);
+  });
+});
+
+// 搜索框回车
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+
+// ======= 收藏视图 =======
+function toggleFavView() {
+  showingFav = !showingFav;
+  var btn = document.getElementById('favToggle');
+  if (showingFav) {
+    btn.classList.add('active');
+    document.querySelectorAll('.tag').forEach(function(t){ t.classList.remove('active'); });
+    currentFavFolder = '__all__';
+    renderFavView();
+  } else {
+    btn.classList.remove('active');
+    document.querySelector('.tag').classList.add('active');
+    currentPage = 1;
+    if (checkApiKey()) loadPhotos(currentQuery, currentPage, false);
+  }
+}
+
+function renderFavView() {
+  var container = document.getElementById('waterfall');
+  container.innerHTML = '';
+  var items = getFavItems(currentFavFolder);
+  var folders = getFolders();
+
+  // 渲染文件夹标签栏
+  var header = document.createElement('div');
+  header.className = 'fav-header';
+  header.style.columnSpan = 'all';
+  var tabsDiv = document.createElement('div');
+  tabsDiv.className = 'folder-tabs';
+  // "全部"标签
+  var allTab = document.createElement('button');
+  allTab.className = 'folder-tab' + (currentFavFolder === '__all__' ? ' active' : '');
+  allTab.innerHTML = '全部 <span class="folder-count">(' + getStore().items.length + ')</span>';
+  allTab.onclick = function(){ currentFavFolder = '__all__'; renderFavView(); };
+  tabsDiv.appendChild(allTab);
+  // 各文件夹标签
+  folders.forEach(function(f) {
+    var count = getFavItems(f.id).length;
+    var tab = document.createElement('button');
+    tab.className = 'folder-tab' + (currentFavFolder === f.id ? ' active' : '');
+    tab.innerHTML = f.name + ' <span class="folder-count">(' + count + ')</span>' +
+      '<span class="folder-actions">' +
+        '<button class="fa-btn" title="重命名" onclick="event.stopPropagation();showRename(\'' + f.id + '\',\'' + f.name.replace(/'/g,"\\'") + '\')">&#9998;</button>' +
+        '<button class="fa-btn" title="删除" onclick="event.stopPropagation();confirmDeleteFolder(\'' + f.id + '\',\'' + f.name.replace(/'/g,"\\'") + '\')">&#10005;</button>' +
+      '</span>';
+    tab.onclick = function(){ currentFavFolder = f.id; renderFavView(); };
+    tabsDiv.appendChild(tab);
+  });
+  header.appendChild(tabsDiv);
+  // 新建文件夹按钮
+  var addBtn = document.createElement('button');
+  addBtn.className = 'add-folder-btn';
+  addBtn.textContent = '+ 新建文件夹';
+  addBtn.onclick = function(){
+    var name = prompt('请输入文件夹名称：');
+    if (name && name.trim()) { createFolder(name.trim()); renderFavView(); }
+  };
+  header.appendChild(addBtn);
+  // 导出按钮
+  var exportBtn = document.createElement('button');
+  exportBtn.className = 'export-btn-fav';
+  exportBtn.innerHTML = '&#128247; 导出图片';
+  exportBtn.onclick = function(){ showExportModal(); };
+  header.appendChild(exportBtn);
+  container.appendChild(header);
+
+  if (items.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.querySelector('#emptyState p').innerHTML = '该文件夹还没有收藏图片<br>浏览图片时点击心形按钮即可收藏';
+  } else {
+    document.getElementById('emptyState').style.display = 'none';
+    items.forEach(function(it) { container.appendChild(createCard(it.photo, it)); });
+  }
+}
+// ======= 图片详情弹窗 =======
+function showDetail(photo) {
+  currentDetailPhoto = photo;
+  document.getElementById('detailImg').src = photo.src.large;
+  document.getElementById('detailTitle').textContent = photo.alt || '精美装修灵感';
+  document.getElementById('detailAuthor').textContent = '摄影师：' + photo.photographer;
+  document.getElementById('detailDesc').textContent = photo.alt || '来自 Unsplash 的高质量室内装修图片';
+  // 重置备注编辑状态
+  document.getElementById('noteEdit').style.display = 'none';
+  document.getElementById('noteDisplay').style.display = 'block';
+  updateDetailFavBtn();
+  document.getElementById('detailModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('detailModal')) {
+    closeDetailForce();
+  }
+}
+function closeDetailForce() {
+  document.getElementById('detailModal').classList.remove('show');
+  document.body.style.overflow = '';
+  currentDetailPhoto = null;
+}
+
+function toggleDetailFav() {
+  if (!currentDetailPhoto) return;
+  toggleFav({
+    id: currentDetailPhoto.id,
+    src: currentDetailPhoto.src,
+    alt: currentDetailPhoto.alt,
+    photographer: currentDetailPhoto.photographer,
+    photographer_url: currentDetailPhoto.photographer_url
+  });
+}
+
+// ======= 文件夹选择器弹窗 =======
+var selectedPickerFolder = null;
+function showFolderPicker() {
+  var folders = getFolders();
+  var list = document.getElementById('folderList');
+  list.innerHTML = '';
+  selectedPickerFolder = folders[0] ? folders[0].id : null;
+  folders.forEach(function(f) {
+    var count = getFavItems(f.id).length;
+    var item = document.createElement('div');
+    item.className = 'folder-item' + (selectedPickerFolder === f.id ? ' selected' : '');
+    item.dataset.fid = f.id;
+    item.innerHTML = '<span class="fi-icon">&#128193;</span><span class="fi-name">' + f.name + '</span><span class="fi-count">' + count + ' 张</span>';
+    item.onclick = function() {
+      list.querySelectorAll('.folder-item').forEach(function(el){ el.classList.remove('selected'); });
+      item.classList.add('selected');
+      selectedPickerFolder = f.id;
+    };
+    list.appendChild(item);
+  });
+  document.getElementById('newFolderInput').value = '';
+  document.getElementById('folderPicker').classList.add('show');
+}
+function closeFolderPicker(e) {
+  if (e.target === document.getElementById('folderPicker')) closeFolderPickerForce();
+}
+function closeFolderPickerForce() {
+  document.getElementById('folderPicker').classList.remove('show');
+  pendingFavPhoto = null;
+}
+function createFolderFromPicker() {
+  var name = document.getElementById('newFolderInput').value.trim();
+  if (!name) return;
+  var id = createFolder(name);
+  selectedPickerFolder = id;
+  showFolderPicker(); // 刷新列表
+}
+function confirmFavToFolder() {
+  if (!pendingFavPhoto || !selectedPickerFolder) return;
+  addFavToFolder(pendingFavPhoto, selectedPickerFolder);
+  closeFolderPickerForce();
+  refreshFavButtons();
+  if (showingFav) renderFavView();
+  // 如果详情弹窗打开，更新备注区
+  if (currentDetailPhoto && currentDetailPhoto.id === pendingFavPhoto.id) {
+    updateDetailFavBtn();
+  }
+  pendingFavPhoto = null;
+}
+
+// ======= 重命名文件夹 =======
+function showRename(folderId, currentName) {
+  renamingFolderId = folderId;
+  document.getElementById('renameInput').value = currentName;
+  document.getElementById('renameModal').classList.add('show');
+}
+function closeRename(e) {
+  if (e.target === document.getElementById('renameModal')) closeRenameForce();
+}
+function closeRenameForce() {
+  document.getElementById('renameModal').classList.remove('show');
+  renamingFolderId = null;
+}
+function confirmRename() {
+  var newName = document.getElementById('renameInput').value.trim();
+  if (!newName || !renamingFolderId) return;
+  renameFolder(renamingFolderId, newName);
+  closeRenameForce();
+  if (showingFav) renderFavView();
+}
+
+// ======= 删除文件夹 =======
+function confirmDeleteFolder(folderId, folderName) {
+  if (confirm('确定要删除文件夹「' + folderName + '」吗？\n文件夹内的图片将被移到「默认收藏」中。')) {
+    deleteFolder(folderId);
+    if (currentFavFolder === folderId) currentFavFolder = '__all__';
+    renderFavView();
+  }
+}
+
+// ======= 备注编辑 =======
+function startEditNote() {
+  if (!currentDetailPhoto || !isFaved(currentDetailPhoto.id)) return;
+  var item = getFavItem(currentDetailPhoto.id);
+  document.getElementById('noteTextarea').value = item ? item.note : '';
+  document.getElementById('noteDisplay').style.display = 'none';
+  document.getElementById('noteEdit').style.display = 'block';
+  document.getElementById('noteTextarea').focus();
+}
+function cancelEditNote() {
+  document.getElementById('noteEdit').style.display = 'none';
+  document.getElementById('noteDisplay').style.display = 'block';
+}
+function saveNote() {
+  if (!currentDetailPhoto) return;
+  var note = document.getElementById('noteTextarea').value.trim();
+  updateNote(currentDetailPhoto.id, note);
+  document.getElementById('noteDisplay').textContent = note;
+  document.getElementById('noteEdit').style.display = 'none';
+  document.getElementById('noteDisplay').style.display = 'block';
+  // 如果在收藏视图，刷新卡片
+  if (showingFav) renderFavView();
+}
+
+
+// ======= 导出图片功能 =======
+var exportLayout = 'grid';
+var exportCanvas = null;
+var exportItems = [];
+
+function showExportModal() {
+  exportItems = getFavItems(currentFavFolder);
+  if (exportItems.length === 0) {
+    alert('当前文件夹没有收藏图片，无法导出');
+    return;
+  }
+  exportLayout = 'grid';
+  document.querySelectorAll('.export-opt').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelector('.export-opt[data-layout="grid"]').classList.add('active');
+  document.getElementById('exportModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  generateExport();
+}
+function closeExport(e) {
+  if (e.target === document.getElementById('exportModal')) closeExportForce();
+}
+function closeExportForce() {
+  document.getElementById('exportModal').classList.remove('show');
+  document.body.style.overflow = '';
+  exportCanvas = null;
+}
+function switchExportLayout(layout) {
+  exportLayout = layout;
+  document.querySelectorAll('.export-opt').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelector('.export-opt[data-layout="' + layout + '"]').classList.add('active');
+  generateExport();
+}
+
+// 加载图片为 Image 对象
+function loadImage(url) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() { resolve(img); };
+    img.onerror = function() { resolve(null); };
+    img.src = url;
+  });
+}
+
+// 文字自动换行绘制
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+  if (!text) return y;
+  var chars = text.split('');
+  var line = '';
+  var currentY = y;
+  for (var i = 0; i < chars.length; i++) {
+    var testLine = line + chars[i];
+    var metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && line.length > 0) {
+      ctx.fillText(line, x, currentY);
+      line = chars[i];
+      currentY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  if (line) { ctx.fillText(line, x, currentY); currentY += lineHeight; }
+  return currentY;
+}
+
+// 绘制圆角矩形
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// 生成导出图
+async function generateExport() {
+  var preview = document.getElementById('exportPreview');
+  preview.innerHTML = '<div class="preview-loading"><div class="spinner"></div><br>正在生成预览图...</div>';
+
+  if (exportLayout === 'single') {
+    // 逐张模式：只预览第一张，下载时全部导出
+    await generateSinglePreview(preview);
+  } else if (exportLayout === 'list') {
+    await generateListExport(preview);
+  } else {
+    await generateGridExport(preview);
+  }
+}
+
+// ===== 宫格布局 =====
+async function generateGridExport(preview) {
+  var items = exportItems;
+  var cols = Math.min(items.length, 3);
+  var cellSize = 300;
+  var gap = 16;
+  var pad = 40;
+  var rows = Math.ceil(items.length / cols);
+  var cw = pad * 2 + cols * cellSize + (cols - 1) * gap;
+  var titleH = 80;
+  // 先计算每个cell需要的额外高度（备注）
+  var noteHeights = [];
+  var tempCanvas = document.createElement('canvas');
+  var tempCtx = tempCanvas.getContext('2d');
+  tempCtx.font = '13px sans-serif';
+  items.forEach(function(it) {
+    var nh = 0;
+    if (it.note) {
+      var words = it.note.split('');
+      var line = '';
+      var lines = 1;
+      for (var i = 0; i < words.length; i++) {
+        var test = line + words[i];
+        if (tempCtx.measureText(test).width > cellSize - 20 && line) { lines++; line = words[i]; }
+        else { line = test; }
+      }
+      nh = lines * 18 + 8;
+    }
+    noteHeights.push(nh);
+  });
+  var rowHeights = [];
+  for (var r = 0; r < rows; r++) {
+    var maxNote = 0;
+    for (var c = 0; c < cols; c++) {
+      var idx = r * cols + c;
+      if (idx < items.length && noteHeights[idx] > maxNote) maxNote = noteHeights[idx];
+    }
+    rowHeights.push(cellSize + 40 + maxNote);
+  }
+  var totalRowH = rowHeights.reduce(function(a,b){return a+b;},0) + (rows-1)*gap;
+  var ch = titleH + totalRowH + pad + 40;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = cw;
+  canvas.height = ch;
+  var ctx = canvas.getContext('2d');
+  // 背景
+  ctx.fillStyle = '#f5f5f5';
+  ctx.fillRect(0, 0, cw, ch);
+  // 标题
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 24px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign = 'center';
+  var folderName = currentFavFolder === '__all__' ? '全部收藏' : (getFolders().find(function(f){return f.id===currentFavFolder;})||{}).name || '收藏';
+  ctx.fillText('装修灵感 - ' + folderName, cw / 2, titleH / 2 + 8);
+  ctx.font = '13px sans-serif';
+  ctx.fillStyle = '#999';
+  ctx.fillText('共 ' + items.length + ' 张图片', cw / 2, titleH / 2 + 30);
+  ctx.textAlign = 'left';
+
+  // 加载所有图片
+  var images = await Promise.all(items.map(function(it){ return loadImage(it.photo.src.medium); }));
+
+  var curY = titleH;
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      var idx = r * cols + c;
+      if (idx >= items.length) break;
+      var x = pad + c * (cellSize + gap);
+      var y = curY;
+      var rh = rowHeights[r];
+      // 卡片背景
+      ctx.fillStyle = '#fff';
+      roundRect(ctx, x, y, cellSize, rh, 10);
+      ctx.fill();
+      ctx.save();
+      roundRect(ctx, x, y, cellSize, cellSize, 10);
+      ctx.clip();
+      // 绘制图片
+      if (images[idx]) {
+        var img = images[idx];
+        var scale = Math.max(cellSize / img.width, cellSize / img.height);
+        var dw = img.width * scale;
+        var dh = img.height * scale;
+        ctx.drawImage(img, x + (cellSize - dw) / 2, y + (cellSize - dh) / 2, dw, dh);
+      }
+      ctx.restore();
+      // 摄影师
+      ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#999';
+      ctx.fillText(items[idx].photo.photographer, x + 10, y + cellSize + 18);
+      // 备注
+      if (items[idx].note) {
+        ctx.font = '13px sans-serif';
+        ctx.fillStyle = '#667eea';
+        drawWrappedText(ctx, items[idx].note, x + 10, y + cellSize + 36, cellSize - 20, 18);
+      }
+    }
+    curY += rowHeights[r] + gap;
+  }
+  // 底部水印
+  ctx.fillStyle = '#ccc';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('由「装修灵感收集器」生成', cw / 2, ch - 16);
+
+  exportCanvas = canvas;
+  preview.innerHTML = '';
+  preview.appendChild(canvas);
+}
+
+// ===== 列表布局 =====
+async function generateListExport(preview) {
+  var items = exportItems;
+  var cw = 800;
+  var pad = 40;
+  var imgW = 200;
+  var imgH = 150;
+  var rowH = Math.max(imgH, 100);
+  var gap = 16;
+  var titleH = 80;
+
+  // 计算每行实际高度（备注可能多行）
+  var tempCanvas = document.createElement('canvas');
+  var tempCtx = tempCanvas.getContext('2d');
+  var textW = cw - pad * 2 - imgW - 30;
+  var itemHeights = [];
+  items.forEach(function(it) {
+    var h = imgH;
+    if (it.note) {
+      tempCtx.font = '13px sans-serif';
+      var words = it.note.split('');
+      var line = '';
+      var lines = 1;
+      for (var i = 0; i < words.length; i++) {
+        var test = line + words[i];
+        if (tempCtx.measureText(test).width > textW && line) { lines++; line = words[i]; }
+        else { line = test; }
+      }
+      var noteH = 60 + lines * 18;
+      if (noteH > h) h = noteH;
+    }
+    itemHeights.push(Math.max(h, imgH) + 20);
+  });
+  var totalH = titleH + itemHeights.reduce(function(a,b){return a+b;},0) + (items.length-1)*gap + pad + 40;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = cw;
+  canvas.height = totalH;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f5f5f5';
+  ctx.fillRect(0, 0, cw, totalH);
+  // 标题
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 24px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign = 'center';
+  var folderName = currentFavFolder === '__all__' ? '全部收藏' : (getFolders().find(function(f){return f.id===currentFavFolder;})||{}).name || '收藏';
+  ctx.fillText('装修灵感 - ' + folderName, cw / 2, titleH / 2 + 8);
+  ctx.font = '13px sans-serif';
+  ctx.fillStyle = '#999';
+  ctx.fillText('共 ' + items.length + ' 张图片', cw / 2, titleH / 2 + 30);
+  ctx.textAlign = 'left';
+
+  var images = await Promise.all(items.map(function(it){ return loadImage(it.photo.src.medium); }));
+  var curY = titleH;
+  for (var i = 0; i < items.length; i++) {
+    var x = pad;
+    var y = curY;
+    var rh = itemHeights[i];
+    // 行背景
+    ctx.fillStyle = '#fff';
+    roundRect(ctx, x, y, cw - pad * 2, rh, 10);
+    ctx.fill();
+    // 图片
+    ctx.save();
+    roundRect(ctx, x + 10, y + 10, imgW, imgH, 8);
+    ctx.clip();
+    if (images[i]) {
+      var img = images[i];
+      var scale = Math.max(imgW / img.width, imgH / img.height);
+      var dw = img.width * scale;
+      var dh = img.height * scale;
+      ctx.drawImage(img, x + 10 + (imgW - dw) / 2, y + 10 + (imgH - dh) / 2, dw, dh);
+    }
+    ctx.restore();
+    // 文字区域
+    var tx = x + imgW + 24;
+    // 描述
+    ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillStyle = '#333';
+    var descY = drawWrappedText(ctx, items[i].photo.alt || '装修灵感图片', tx, y + 26, textW, 20);
+    // 摄影师
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#999';
+    ctx.fillText(items[i].photo.photographer, tx, descY + 6);
+    // 备注
+    if (items[i].note) {
+      ctx.font = '13px sans-serif';
+      ctx.fillStyle = '#667eea';
+      drawWrappedText(ctx, '备注：' + items[i].note, tx, descY + 28, textW, 18);
+    }
+    curY += rh + gap;
+  }
+  // 底部水印
+  ctx.fillStyle = '#ccc';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('由「装修灵感收集器」生成', cw / 2, totalH - 16);
+
+  exportCanvas = canvas;
+  preview.innerHTML = '';
+  preview.appendChild(canvas);
+}
+
+// ===== 逐张导出（预览第一张） =====
+async function generateSinglePreview(preview) {
+  if (exportItems.length === 0) return;
+  var item = exportItems[0];
+  var canvas = await renderSingleCard(item);
+  exportCanvas = canvas;
+  preview.innerHTML = '';
+  preview.appendChild(canvas);
+  if (exportItems.length > 1) {
+    var hint = document.createElement('div');
+    hint.style.cssText = 'color:#999;font-size:13px;margin-top:8px;';
+    hint.textContent = '预览第 1 张，点击下载将逐张保存全部 ' + exportItems.length + ' 张图片';
+    preview.appendChild(hint);
+  }
+}
+
+async function renderSingleCard(item) {
+  var cw = 500;
+  var imgH = 400;
+  var pad = 24;
+  // 计算备注高度
+  var noteLines = 0;
+  if (item.note) {
+    var tc = document.createElement('canvas').getContext('2d');
+    tc.font = '14px sans-serif';
+    var words = item.note.split('');
+    var line = '';
+    noteLines = 1;
+    for (var i = 0; i < words.length; i++) {
+      var test = line + words[i];
+      if (tc.measureText(test).width > cw - pad * 2 - 20 && line) { noteLines++; line = words[i]; }
+      else { line = test; }
+    }
+  }
+  var noteH = noteLines > 0 ? noteLines * 20 + 30 : 0;
+  var ch = imgH + 80 + noteH + 30;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = cw;
+  canvas.height = ch;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, cw, ch);
+  // 图片
+  var img = await loadImage(item.photo.src.large || item.photo.src.medium);
+  if (img) {
+    var scale = Math.max(cw / img.width, imgH / img.height);
+    var dw = img.width * scale;
+    var dh = img.height * scale;
+    ctx.drawImage(img, (cw - dw) / 2, (imgH - dh) / 2, dw, dh);
+  }
+  // 描述
+  var ty = imgH + 24;
+  ctx.font = '15px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillStyle = '#333';
+  ty = drawWrappedText(ctx, item.photo.alt || '装修灵感图片', pad, ty, cw - pad * 2, 22);
+  // 摄影师
+  ctx.font = '12px sans-serif';
+  ctx.fillStyle = '#999';
+  ctx.fillText(item.photo.photographer, pad, ty + 4);
+  ty += 20;
+  // 备注
+  if (item.note) {
+    ctx.fillStyle = '#f5f3ff';
+    roundRect(ctx, pad - 4, ty, cw - pad * 2 + 8, noteH, 8);
+    ctx.fill();
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = '#667eea';
+    drawWrappedText(ctx, item.note, pad + 6, ty + 18, cw - pad * 2 - 12, 20);
+  }
+  return canvas;
+}
+
+// ===== 下载导出图片 =====
+function downloadExport() {
+  if (exportLayout === 'single' && exportItems.length > 1) {
+    // 逐张下载所有
+    downloadAllSingles();
+    return;
+  }
+  if (!exportCanvas) { alert('请等待预览生成完成'); return; }
+  var link = document.createElement('a');
+  link.download = '装修灵感_' + new Date().toLocaleDateString().replace(/\//g,'-') + '.png';
+  link.href = exportCanvas.toDataURL('image/png');
+  link.click();
+}
+
+async function downloadAllSingles() {
+  for (var i = 0; i < exportItems.length; i++) {
+    var canvas = await renderSingleCard(exportItems[i]);
+    var link = document.createElement('a');
+    link.download = '装修灵感_' + (i + 1) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    // 稍等一下避免浏览器阻止多次下载
+    await new Promise(function(r){ setTimeout(r, 300); });
+  }
+}
+
+// ======= 分享功能 =======
+function shareApp() {
+  document.getElementById('shareUrl').value = window.location.href;
+  document.getElementById('shareModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeShare(e) {
+  if (e.target === document.getElementById('shareModal')) closeShareForce();
+}
+function closeShareForce() {
+  document.getElementById('shareModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function copyShareUrl() {
+  var url = document.getElementById('shareUrl').value;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() { showToast('链接已复制，快去分享吧'); });
+  } else {
+    var input = document.getElementById('shareUrl');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    showToast('链接已复制，快去分享吧');
+  }
+  setTimeout(function(){ closeShareForce(); }, 800);
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 2000);
+}
+
+// ======= 设置弹窗 =======
+function showSettings() {
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('settingsModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeSettings(e) {
+  if (e.target === document.getElementById('settingsModal')) {
+    closeSettingsForce();
+  }
+}
+function closeSettingsForce() {
+  document.getElementById('settingsModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function saveApiKey() {
+  var key = document.getElementById('apiKeyInput').value.trim();
+  if (key) {
+    localStorage.setItem('unsplash_api_key', key);
+    closeSettingsForce();
+    checkApiKey();
+    currentPage = 1;
+    loadPhotos(currentQuery, currentPage, false);
+  } else {
+    alert('请输入有效的 Access Key');
+  }
+}
+
+// ======= 无限滚动 =======
+window.addEventListener('scroll', function() {
+  if (showingFav || isLoading) return;
+  var scrollY = window.scrollY || window.pageYOffset;
+  var windowH = window.innerHeight;
+  var docH = document.documentElement.scrollHeight;
+  if (scrollY + windowH >= docH - 300) {
+    currentPage++;
+    loadPhotos(currentQuery, currentPage, true);
+  }
+});
+
+// ======= 键盘事件 =======
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeDetailForce();
+    closeSettingsForce();
+    closeFolderPickerForce();
+    closeRenameForce();
+    closeExportForce();
+    closeShareForce();
+  }
+});
+
+// ======= 初始化 =======
+(function init() {
+  if (checkApiKey()) {
+    loadPhotos(currentQuery, currentPage, false);
+  } else {
+    document.getElementById('emptyState').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>
